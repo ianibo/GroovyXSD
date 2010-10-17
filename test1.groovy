@@ -102,9 +102,23 @@ XSSimpleType processSimpleTypeDefinition(simple_type_definition_node) {
   new XSSimpleType(name: simple_type_definition_node.@name)
 }
 
-XSGroup processGroupDefinition(group_definition_node) {
+XSGroup processGroupDefinition(group_definition_node, context) {
   println "processGroupDefinition ${group_definition_node.@name}"
-  new XSGroup()
+  def name = interpretTypeName(group_definition_node.@name.text(), context)
+  def result = new XSGroup()
+
+  // Content of model is all, choice or sequence
+  if ( group_definition_node.all.size() > 0 ) {
+    println "Processing an all group"
+  }
+  else if ( group_definition_node.choice.size() > 0 ) {
+    println "Processing a choice group"
+  }
+  else if ( group_definition_node.sequence.size() > 0 ) {
+    println "Processing a sequence group"
+  }
+
+  result;
 }
 
 
@@ -152,7 +166,7 @@ void loadSchema(level, schema_url, schema_info) {
     }
     else if ( it.name() == "group" ) {
       // // println "Process group"
-      schema_info["groups"][interpretTypeName(it.@name.text(),context)] = processGroupDefinition(it)
+      schema_info["groups"][interpretTypeName(it.@name.text(),context)] = processGroupDefinition(it, context)
     }
     else if ( it.name() == "attributeGroup" ) {
       // println "Process attributeGroup"
