@@ -1,5 +1,5 @@
 
-class XSComplexType {
+class XSComplexType extends XSType {
 
   String name
   List particles = [];

@@ -52,8 +52,28 @@ Object processParticle(it, context) {
 }
 
 XSElement processElementDefinition(element_definition_node, context) {
-  println "processElementDefinition"
-  new XSElement(name: interpretTypeName(element_definition_node.@name.text(), context), type: interpretTypeName(element_definition_node.@type.text(), context))
+  def result = null;
+  def name = interpretTypeName(element_definition_node.@name.text(), context)
+  println "processElementDefinition ${name}"
+
+  // An element is composed of an inline simpleType or a ComplexType child or an @type attribute. We need to figure out which it is.
+  if ( element_definition_node.complexType.size() > 0 ) {
+    println "Complex Type"
+    result = new XSElement(name: name, 
+                           type: processComplexTypeDefinition(element_definition_node.simpleType, context))
+  }
+  else if ( element_definition_node.simpleType.size() > 0 ) {
+    println "simple type"
+    result = new XSElement(name: name, 
+                           type: processSimpleTypeDefinition(element_definition_node.simpleType, context))
+  }
+  else if ( element_definition_node.@type != '' ) {
+    println "Type via attribute"
+    result = new XSElement(name: name, 
+                           type_name: interpretTypeName(element_definition_node.@type.text(), context))
+  }
+
+  result
 }
 
 XSComplexType processComplexTypeDefinition(complex_type_definition_node, context) {

@@ -1,4 +1,4 @@
 
-class XSSimpleType {
+class XSSimpleType extends XSType {
   String name
 }
