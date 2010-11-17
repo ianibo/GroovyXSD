@@ -216,7 +216,10 @@ groovy.xml.QName interpretTypeName(String type_name, context) {
 
 
 
-void describe(root_element, schema_info) {
+/**
+ *  Enumerate every possible xpath in the schema document
+ */
+void describe(root_element, schema_info, depth) {
 
   // Look up root element
   XSElement e = schema_info.elements[root_element];
@@ -225,7 +228,7 @@ void describe(root_element, schema_info) {
   def context = [:]
   context.parentid = "";
 
-  e.describe(schema_info, context);
+  e.describe(schema_info, context, depth);
 
   // Now describe the type for that element
 }
@@ -237,9 +240,9 @@ def schema_info = [complex_types:[:], simple_types:[:], elements:[:], groups:[:]
 
 loadSchema(0,new URL("http://ltsc.ieee.org/xsd/lomv1.0/lom.xsd"),schema_info)
 
-println "Schema contains ${schema_info.complex_types.size()} complex elements. "
+println "Schema contains ${schema_info.complex_types.size()} complex elements. \n\n\n\n"
 
-describe(new groovy.xml.QName("http://ltsc.ieee.org/xsd/LOM","lom"),schema_info);
+describe(new groovy.xml.QName("http://ltsc.ieee.org/xsd/LOM","lom"),schema_info,0);
 
 
 
